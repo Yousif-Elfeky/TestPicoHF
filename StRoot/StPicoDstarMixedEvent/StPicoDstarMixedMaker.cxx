@@ -1016,76 +1016,75 @@ Int_t StPicoDstarMixedMaker::Make()
              current_ePlus[current_nEPlus].SetE(sqrt(pow(M_electron,2.0)+pow(mom.Mag(),2.0)));
              current_nEPlus++;*/
         }
-
+      }
          //current_nE++;
 
-         // ---- Store Kaon candidates for D0 analysis ----
-         if (isTofKaon && isTpcKaon) {
-           if (charge < 0) {
-             ParticleInfo kineg;
-             kineg.charge = charge;
-             kineg.pt = mom.Perp();
-             kineg.eta = mom.Eta();
-             kineg.phi = mom.Phi();
-             kineg.p = mom.Mag();
-             kineg.nSigmaPi = nSigmaPi;
-             kineg.beta = beta;
-             kineg.energy = sqrt(pow(M_kaon,2.0)+pow(mom.Mag(),2.0));
-             kineg.p1 = mom.X();
-             kineg.p2 = mom.Y();
-             kineg.p3 = mom.Z();
-             kaoninfo_neg.push_back(kineg);
-           } else if (charge > 0) {
-             ParticleInfo kipos;
-             kipos.charge = charge;
-             kipos.pt = mom.Perp();
-             kipos.eta = mom.Eta();
-             kipos.phi = mom.Phi();
-             kipos.p = mom.Mag();
-             kipos.nSigmaPi = nSigmaPi;
-             kipos.beta = beta;
-             kipos.energy = sqrt(pow(M_kaon,2.0)+pow(mom.Mag(),2.0));
-             kipos.p1 = mom.X();
-             kipos.p2 = mom.Y();
-             kipos.p3 = mom.Z();
-             kaoninfo_pos.push_back(kipos);
-           }
-         }
-
-         // ---- Store Pion candidates for D0 analysis ----
-         if (isTofPion && isTpcPion) {
-           if (charge < 0) {
-             ParticleInfo pineg;
-             pineg.charge = charge;
-             pineg.pt = mom.Perp();
-             pineg.eta = mom.Eta();
-             pineg.phi = mom.Phi();
-             pineg.p = mom.Mag();
-             pineg.nSigmaPi = nSigmaPi;
-             pineg.beta = beta;
-             pineg.energy = sqrt(pow(M_pion,2.0)+pow(mom.Mag(),2.0));
-             pineg.p1 = mom.X();
-             pineg.p2 = mom.Y();
-             pineg.p3 = mom.Z();
-             pioninfo_neg.push_back(pineg);
-           } else if (charge > 0) {
-             ParticleInfo pipos;
-             pipos.charge = charge;
-             pipos.pt = mom.Perp();
-             pipos.eta = mom.Eta();
-             pipos.phi = mom.Phi();
-             pipos.p = mom.Mag();
-             pipos.nSigmaPi = nSigmaPi;
-             pipos.beta = beta;
-             pipos.energy = sqrt(pow(M_pion,2.0)+pow(mom.Mag(),2.0));
-             pipos.p1 = mom.X();
-             pipos.p2 = mom.Y();
-             pipos.p3 = mom.Z();
-             pioninfo_pos.push_back(pipos);
-           }
-         }
+      // ---- Store Kaon candidates for D0 analysis ----
+      if (isTofKaon && isTpcKaon) {
+        if (charge < 0) {
+          ParticleInfo kineg;
+          kineg.charge = charge;
+          kineg.pt = mom.Perp();
+          kineg.eta = mom.Eta();
+          kineg.phi = mom.Phi();
+          kineg.p = mom.Mag();
+          kineg.nSigmaPi = nSigmaPi;
+          kineg.beta = beta;
+          kineg.energy = sqrt(pow(M_kaon,2.0)+pow(mom.Mag(),2.0));
+          kineg.p1 = mom.X();
+          kineg.p2 = mom.Y();
+          kineg.p3 = mom.Z();
+          kaoninfo_neg.push_back(kineg);
+        } else if (charge > 0) {
+          ParticleInfo kipos;
+          kipos.charge = charge;
+          kipos.pt = mom.Perp();
+          kipos.eta = mom.Eta();
+          kipos.phi = mom.Phi();
+          kipos.p = mom.Mag();
+          kipos.nSigmaPi = nSigmaPi;
+          kipos.beta = beta;
+          kipos.energy = sqrt(pow(M_kaon,2.0)+pow(mom.Mag(),2.0));
+          kipos.p1 = mom.X();
+          kipos.p2 = mom.Y();
+          kipos.p3 = mom.Z();
+          kaoninfo_pos.push_back(kipos);
+        }
       }
-      
+
+      // ---- Store Pion candidates for D0 analysis ----
+      if (isTofPion && isTpcPion) {
+        if (charge < 0) {
+          ParticleInfo pineg;
+          pineg.charge = charge;
+          pineg.pt = mom.Perp();
+          pineg.eta = mom.Eta();
+          pineg.phi = mom.Phi();
+          pineg.p = mom.Mag();
+          pineg.nSigmaPi = nSigmaPi;
+          pineg.beta = beta;
+          pineg.energy = sqrt(pow(M_pion,2.0)+pow(mom.Mag(),2.0));
+          pineg.p1 = mom.X();
+          pineg.p2 = mom.Y();
+          pineg.p3 = mom.Z();
+          pioninfo_neg.push_back(pineg);
+        } else if (charge > 0) {
+          ParticleInfo pipos;
+          pipos.charge = charge;
+          pipos.pt = mom.Perp();
+          pipos.eta = mom.Eta();
+          pipos.phi = mom.Phi();
+          pipos.p = mom.Mag();
+          pipos.nSigmaPi = nSigmaPi;
+          pipos.beta = beta;
+          pipos.energy = sqrt(pow(M_pion,2.0)+pow(mom.Mag(),2.0));
+          pipos.p1 = mom.X();
+          pipos.p2 = mom.Y();
+          pipos.p3 = mom.Z();
+          pioninfo_pos.push_back(pipos);
+        }
+      } 
+           
       if (tofmatch) {
         ntofhits++;
         if(QA) hinvBetavsP->Fill(mom.Mag(),1./beta);
