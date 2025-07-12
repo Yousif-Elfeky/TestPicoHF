@@ -486,7 +486,6 @@ Int_t StPicoDstarMixedMaker::Finish()
   hMkpiCountPt_like2->Write();
   h_nSigmaElectron_P->Write();
   h_nSigmaElectron_P_tpc->Write();
-  h_p_E0->Write();
 
   h_nSigmaElectron_Inclusive->Write();
   h_nSigmaPion_Inclusive->Write();
