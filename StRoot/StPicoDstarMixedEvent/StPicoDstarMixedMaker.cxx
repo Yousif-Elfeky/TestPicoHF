@@ -1265,6 +1265,7 @@ Int_t StPicoDstarMixedMaker::Make()
       particle2_4V.SetPz(pioninfo_pos[y].p3);
       particle2_4V.SetE(pioninfo_pos[y].energy);
       kpipair = particle1_4V + particle2_4V;
+      if(kpipair.Perp() < 1.5) continue;
       hMkpiCount->Fill(kpipair.M());
       hMkpiCountPt->Fill(kpipair.M(), kpipair.Perp());
     }
@@ -1281,6 +1282,7 @@ Int_t StPicoDstarMixedMaker::Make()
       particle2_4V.SetPz(pioninfo_neg[y].p3);
       particle2_4V.SetE(pioninfo_neg[y].energy);
       kpipair = particle1_4V + particle2_4V;
+      if(kpipair.Perp() < 1.5) continue;
       hMkpiCount->Fill(kpipair.M());
       hMkpiCountPt->Fill(kpipair.M(), kpipair.Perp());
     }
@@ -1298,6 +1300,7 @@ Int_t StPicoDstarMixedMaker::Make()
       particle2_4V.SetPz(pioninfo_neg[y].p3);
       particle2_4V.SetE(pioninfo_neg[y].energy);
       kpipair = particle1_4V + particle2_4V;
+      if(kpipair.Perp() < 1.5) continue;
       hMkpiCount_like1->Fill(kpipair.M());
       hMkpiCountPt_like1->Fill(kpipair.M(), kpipair.Perp());
     }
@@ -1315,6 +1318,7 @@ Int_t StPicoDstarMixedMaker::Make()
       particle2_4V.SetPz(pioninfo_pos[y].p3);
       particle2_4V.SetE(pioninfo_pos[y].energy);
       kpipair = particle1_4V + particle2_4V;
+      if(kpipair.Perp() < 1.5) continue;
       hMkpiCount_like2->Fill(kpipair.M());
       hMkpiCountPt_like2->Fill(kpipair.M(), kpipair.Perp());
     }
