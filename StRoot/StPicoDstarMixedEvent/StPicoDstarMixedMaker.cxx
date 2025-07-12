@@ -568,7 +568,7 @@ Int_t StPicoDstarMixedMaker::Make()
   
   //if(mRunId < 22057001) return 0;   
 
-  hevt->Fill(runnum[mRunId]);
+  if(QA) hevt->Fill(runnum[mRunId]);
 
   //if(mRunId < 22043001) return 0;// form 20210212
 
