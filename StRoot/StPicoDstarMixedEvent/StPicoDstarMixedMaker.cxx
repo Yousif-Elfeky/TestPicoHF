@@ -965,10 +965,10 @@ Int_t StPicoDstarMixedMaker::Make()
 
 
       if (isTOFElectron && isTPCElectron) {
-        hnEvsEtavsVz->Fill(mom.Eta(),mVz); 
-        hnEvsPhivsVz->Fill(mom.Phi(),mVz);
+        if(QA) hnEvsEtavsVz->Fill(mom.Eta(),mVz); 
+        if(QA) hnEvsPhivsVz->Fill(mom.Phi(),mVz);
         
-        p_nSigmaE->Fill(runnum[mRunId],trk->nSigmaElectron());
+        if(QA) p_nSigmaE->Fill(runnum[mRunId],trk->nSigmaElectron());
         //p_nSigmaTofE->Fill(runnum[mRunId],pbtofnSigmaE);
         
         if(trk->charge()<0 && tofmatch)
