@@ -61,7 +61,7 @@ StPicoDstarMixedMaker::~StPicoDstarMixedMaker()
 {}
 //-----------------------------------------------------------------------------
 void StPicoDstarMixedMaker::initHists(){
-  //int totalNum = 170;//9.2GeV 
+  //int totalNum = 170;//9.2GeV
   //int totalNum = 661;//9.2GeV 2020b
   //int totalNum = 403;//9.2GeV 2020c
   //int totalNum = 335;//9.2GeV 2020c 20200807
@@ -69,7 +69,7 @@ void StPicoDstarMixedMaker::initHists(){
   //int totalNum = 508;//9.2GeV 2020c 20200828
   //int totalNum = 141;//7.7GeV 2020 20200911
   //int totalNum = 1127;//19.6GeV 2020c
-  //int totalNum = 1950;//11.5GeV 
+  //int totalNum = 1950;//11.5GeV
   //int totalNum = 29;//19.5GeV fixed target
   //int totalNum = 14;//54GeV 2020 reproduction test
   //int totalNum = 547;//54GeV 2020 reproduction 20201008
@@ -85,25 +85,25 @@ void StPicoDstarMixedMaker::initHists(){
   //int totalNum = 30;// 19p6 20210805 SL21cB
   //int totalNum = 1145;// 19p6 20211221
   //int totalNum = 59;// AuAu200 2023
-  //int totalNum = 1125; //19GeV 2019 
+  //int totalNum = 1125; //19GeV 2019
   //int totalNum = 32; //temp
-  
+
   //char name_RunID[100];
 ifstream readnum;
 readnum.open(mRunNumList);
 
 if (!readnum.is_open()) {
   cout << "Error: Could not open run number list file: " << mRunNumList << endl;
-  return; 
+  return;
 }
 
-int totalNum = 0; 
+int totalNum = 0;
 
 if (mRunbyRunQA) {
   cout << "Starting to initial run numbers..." << endl;
 
-  int tmpRunNum; 
-  int index = 0; 
+  int tmpRunNum;
+  int index = 0;
 
   while (readnum >> tmpRunNum) {
     runnum.insert(pair<int, int>(tmpRunNum, index));
@@ -124,7 +124,7 @@ if(QA){
   hevtbadcut = new TH1D("hevtbadcut","Events after remove bad run;Run;Counts",totalNum,0,totalNum);
   hpassevtcut = new TH1D("hpassevtcut","pass event cut", 6, -0.5 , 5.5 );
   //run by run QA
-  if (mRunbyRunQA){ 
+  if (mRunbyRunQA){
     pVpdVz = new TProfile("VpdVz","VpdVz vs runId;runId;VpdVz(cm)",totalNum,0,totalNum);
     pVzVpdVz = new TProfile("VzVpdVz","VzVpdVz vs runId;runId;VpdVz-Vz(cm)",totalNum,0,totalNum);
     pRefmult = new TProfile("Refmult","Refmult vs runId;runId;Refmult",totalNum,0,totalNum);
@@ -134,7 +134,7 @@ if(QA){
     pVx = new TProfile("pVx","pVx;runId;pVx(cm)",totalNum,0,totalNum);
     pVy = new TProfile("pVy","pVy;runId;pVy(cm)",totalNum,0,totalNum);
     pVr = new TProfile("pVr","pVr;runId;pVr(cm)",totalNum,0,totalNum);
-    
+
     //track level QA
     pTof = new TProfile("Tof","1/#beta vs runId;runId;1/#beta",totalNum,0,totalNum);
     pDedx = new TProfile("Dedx","dEdx vs runId;runId;dEdx",totalNum,0,totalNum);
@@ -153,7 +153,7 @@ if(QA){
     p_nSigmaKaon = new TProfile("p_nSigmaKaon","primary nSigmaKaon vs runId;runId;n#sigma_{K}",totalNum,0,totalNum);
     p_nSigmaProton = new TProfile("p_nSigmaProton","primary nSigmaProton vs runId;runId;n#sigma_{p}",totalNum,0,totalNum);
     p_nTofMatch = new TProfile("p_nTofMatch","nTofMatch vs runId;runId;nTofMatch",totalNum,0,totalNum);
-    
+
     p_nSigmaTofE = new TProfile("p_nSigmaTofE","primary nSigmaTofE vs runId;runId;nSigmaTof_{e}",totalNum,0,totalNum);
     p_nSigmaTofPion = new TProfile("p_nSigmaTofPion","primary nSigmaTofPion vs runId;runId;nSigmaTof_{#pi}",totalNum,0,totalNum);
     p_nSigmaTofKaon = new TProfile("p_nSigmaTofKaon","primary nSigmaTofKaon vs runId;runId;nSigmaTof_{K}",totalNum,0,totalNum);
@@ -179,8 +179,8 @@ if(QA){
     h_Vx_Vy = new TH2F("h_Vx_Vy","Vertex XY",600,-3,3,600,-3,3);
     hnEvsEtavsVz = new TH2F("hnEvsEtavsVz","nElectron;#eta;Vz(cm)",40,-1.5,1.5,240,-60,60);
     hnEvsPhivsVz = new TH2F("hnEvsPhivsVz","nElectron;#phi;Vz(cm)",100,-1*TMath::Pi(),TMath::Pi(),240,-60,60);
-    hnTofMult = new TH1F("hnTofMult","TOF Multiplicity",2000,0,2000); 
-    hnTofMulvsRef = new TH2F("hnTofMulvsRef","RefMult vs nTofMult;RefMult;btofTrayMultiplicity",900,0,900,2000,0,2000); 
+    hnTofMult = new TH1F("hnTofMult","TOF Multiplicity",2000,0,2000);
+    hnTofMulvsRef = new TH2F("hnTofMulvsRef","RefMult vs nTofMult;RefMult;btofTrayMultiplicity",900,0,900,2000,0,2000);
     hnTofMatch = new TH1F("hnTofMatch","BTOF matched tracks",900,0,900);
     hnTofMatvsRef= new TH2F("hnTofMatvsRef","RefMult VS nTofmatch;RefMult;nTofMatch",900,0,900,900,0,900);
     hnTofHitvsRef= new TH2F("hnTofHitvsRef","hnTofHit vs RefMult;nTofHits;refMult",900,0,900,900,0,900);
@@ -213,7 +213,7 @@ if(QA){
     ph_btowPhiDz = new TProfile("ph_btowPhiDz","btowPhiDz;RunId;btowPhiDz",totalNum,0,totalNum);
     h_btowEtaDz = new TH1F("h_btowEtaDz","btowEtaDz;btowEtaDz",1000,-50,50);
     ph_btowEtaDz = new TProfile("ph_btowEtaDz","btowEtaDz;RunId;btowEtaDz",totalNum,0,totalNum);
-    
+
     h_mtdDeltaY = new TH1F("h_mtdDeltaY","#Delta Y(mtd);#Delta Y",1000,-50,50);
     ph_mtdDeltaY = new TProfile("ph_mtdDeltaY","#Delta Y(mtd);RunId;#Delta Y",totalNum,0,totalNum);
     h_mtdDeltaZ = new TH1F("h_mtdDeltaZ","#Delta Z(mtd);#Delta Z",1000,-50,50);
@@ -280,19 +280,19 @@ if(QA){
     h_nSigmaPion_Inclusive     = new TH1F("h_nSigmaPion_Inclusive", "Inclusive TPC n#sigma_{Pion};n#sigma_{#pi};Counts", 300, -15, 15);
     h_nSigmaKaon_Inclusive     = new TH1F("h_nSigmaKaon_Inclusive", "Inclusive TPC n#sigma_{Kaon};n#sigma_{K};Counts", 300, -15, 15);
     h_nSigmaProton_Inclusive   = new TH1F("h_nSigmaProton_Inclusive", "Inclusive TPC n#sigma_{Proton};n#sigma_{p};Counts", 300, -15, 15);
-    
+
     // --- 2D Inclusive nSigma vs. p*charge ---
     h_nSigmaVsPcharge_Electron = new TH2F("h_nSigmaVsPcharge_Electron", "n#sigma_{Electron} vs p*charge;p*charge (GeV/c);n#sigma_{e}", 1000, -5, 5, 300, -15, 15);
     h_nSigmaVsPcharge_Pion     = new TH2F("h_nSigmaVsPcharge_Pion", "n#sigma_{Pion} vs p*charge;p*charge (GeV/c);n#sigma_{#pi}", 1000, -5, 5, 300, -15, 15);
     h_nSigmaVsPcharge_Kaon     = new TH2F("h_nSigmaVsPcharge_Kaon", "n#sigma_{Kaon} vs p*charge;p*charge (GeV/c);n#sigma_{K}", 1000, -5, 5, 300, -15, 15);
     h_nSigmaVsPcharge_Proton   = new TH2F("h_nSigmaVsPcharge_Proton", "n#sigma_{Proton} vs p*charge;p*charge (GeV/c);n#sigma_{p}", 1000, -5, 5, 300, -15, 15);
-    
+
     // --- TPC nSigma distributions for tracks passing TOF cuts ---
     h_TpcNsigmaE_afterTofCut = new TH1F("h_TpcNsigmaE_afterTofCut", "TPC n#sigma_{e} (for TOF Electrons);n#sigma_{e};Counts", 200, -10, 10);
     h_TpcNsigmaPi_afterTofCut = new TH1F("h_TpcNsigmaPi_afterTofCut", "TPC n#sigma_{#pi} (for TOF Pions);n#sigma_{#pi};Counts", 200, -10, 10);
     h_TpcNsigmaK_afterTofCut = new TH1F("h_TpcNsigmaK_afterTofCut", "TPC n#sigma_{K} (for TOF Kaons);n#sigma_{K};Counts", 200, -10, 10);
     h_TpcNsigmaP_afterTofCut = new TH1F("h_TpcNsigmaP_afterTofCut", "TPC n#sigma_{p} (for TOF Protons);n#sigma_{p};Counts", 200, -10, 10);
-    
+
     // --- TOF nSigma distributions for tracks passing TPC cuts ---
     h_TofNsigmaE_afterTpcCut = new TH1F("h_TofNsigmaE_afterTpcCut", "TOF n#sigma_{e} (for TPC Electrons);n#sigma_{e};Counts", 200, -10, 10);
     h_TofNsigmaPi_afterTpcCut = new TH1F("h_TofNsigmaPi_afterTpcCut", "TOF n#sigma_{#pi} (for TPC Pions);n#sigma_{#pi};Counts", 200, -10, 10);
@@ -346,7 +346,7 @@ Int_t StPicoDstarMixedMaker::Finish()
     hVzVpdVz->Write();
     hnEvsEtavsVz->Write();
     hnEvsPhivsVz->Write();
-    hnTofMulvsRef->Write(); 
+    hnTofMulvsRef->Write();
     hnTofMatvsRef->Write();
     hnTofHitvsRef->Write();
     hnTofMult->Write();
@@ -356,7 +356,7 @@ Int_t StPicoDstarMixedMaker::Finish()
     h_Vz_VpdVz->Write();
     hevtcut->Write();
     hevtbadcut->Write();
-    hpassevtcut->Write(); 
+    hpassevtcut->Write();
     hrefmult->Write();
     hrefmult_Pos->Write();
     hrefmult_Neg->Write();
@@ -420,7 +420,7 @@ Int_t StPicoDstarMixedMaker::Finish()
     h_ETof_betavsP->Write();
     h_ETof_deltaX->Write();
     h_ETof_deltaY->Write();
-  
+
     if (mRunbyRunQA) {
       pVpdVz->Write();
       pVzVpdVz->Write();
@@ -431,7 +431,7 @@ Int_t StPicoDstarMixedMaker::Finish()
       pVx->Write();
       pVy->Write();
       pVr->Write();
-      pTof->Write(); 
+      pTof->Write();
       pDedx->Write();
       pgDCA->Write();
       ppDCA->Write();
@@ -491,12 +491,12 @@ Int_t StPicoDstarMixedMaker::Finish()
   h_nSigmaPion_Inclusive->Write();
   h_nSigmaKaon_Inclusive->Write();
   h_nSigmaProton_Inclusive->Write();
-  
+
   h_nSigmaVsPcharge_Electron->Write();
   h_nSigmaVsPcharge_Pion->Write();
   h_nSigmaVsPcharge_Kaon->Write();
   h_nSigmaVsPcharge_Proton->Write();
-  
+
   // TPC after TOF cuts
   h_TpcNsigmaE_afterTofCut->Write();
   h_TpcNsigmaPi_afterTofCut->Write();
@@ -519,7 +519,7 @@ Int_t StPicoDstarMixedMaker::Finish()
   h2_TofNsigmaE_vs_p_afterTpcCut->Write();
   h2_TofNsigmaPi_vs_p_afterTpcCut->Write();
   h2_TofNsigmaK_vs_p_afterTpcCut->Write();
-  h2_TofNsigmaP_vs_p_afterTpcCut->Write();  
+  h2_TofNsigmaP_vs_p_afterTpcCut->Write();
 
   // =================================================================
 
@@ -561,19 +561,19 @@ Int_t StPicoDstarMixedMaker::Make()
   // -------------- USER ANALYSIS -------------------------
   StPicoEvent const * picoEvent = picoDst->event();
   //trigger
-  
 
-  //if (!isGoodTrigger(picoEvent)) return 0;    
+
+  //if (!isGoodTrigger(picoEvent)) return 0;
   mRunId = picoEvent->runId();
-  
-  //if(mRunId < 22057001) return 0;   
+
+  //if(mRunId < 22057001) return 0;
 
   if(QA) hevt->Fill(runnum[mRunId]);
 
   //if(mRunId < 22043001) return 0;// form 20210212
 
     TVector3 pVtx = picoEvent->primaryVertex();
-  if (mRunbyRunQA && isGoodQaEvent(picoEvent) && QA ){ 
+  if (mRunbyRunQA && isGoodQaEvent(picoEvent) && QA ){
     //primary vertex
     // StThreeVectorF pVtx = picoEvent->primaryVertex();
     if(DEBUG) cout<<"star runbyrun QA"<<endl;
@@ -581,14 +581,14 @@ Int_t StPicoDstarMixedMaker::Make()
     mVy = pVtx.y();
     mVz = pVtx.z();
     mVr = sqrt(mVx*mVx+mVy*mVy);
-    
+
     mVpdVz = picoEvent->vzVpd();
     if(DEBUG) cout<<"runbyrun VpdVz: "<<mVpdVz<<endl;
     if(DEBUG) cout<<"runbyrun Vz: "<<mVz<<endl;
     mRefmult = picoEvent->refMult();
     mVpdHitEast = picoEvent->nVpdHitsEast();
     mVpdHitWest = picoEvent->nVpdHitsWest();
-    if (DEBUG) cout<<"start filling "<<mRunId<<" "<<runnum[mRunId]<<endl; 
+    if (DEBUG) cout<<"start filling "<<mRunId<<" "<<runnum[mRunId]<<endl;
     if(fabs(mVpdVz) < 200){//fill event level profile
     pVpdVz->Fill(runnum[mRunId],mVpdVz);
     pVzVpdVz->Fill(runnum[mRunId],mVpdVz-mVz);
@@ -606,14 +606,14 @@ Int_t StPicoDstarMixedMaker::Make()
     p_nBemcPidTraits->Fill(runnum[mRunId],picoDst->numberOfBEmcPidTraits());
     p_nMtdPidTraits->Fill(runnum[mRunId],picoDst->numberOfMtdPidTraits());
     p_nMtdHits->Fill(runnum[mRunId],picoDst->numberOfMtdHits());
-    //track level 
+    //track level
 
     int nTracks = picoDst->numberOfTracks();
     //if (DEBUG)  cout << nTracks <<endl;
     //global
     for (int itrack=0;itrack<nTracks;itrack++){
       StPicoTrack* trk = picoDst->track(itrack);
-      bool goodQAtrack = isGoodQaTrack(trk); 
+      bool goodQAtrack = isGoodQaTrack(trk);
       if (!goodQAtrack) continue;
       if (!(fabs(trk->gDCA(pVtx.x(),pVtx.y(),pVtx.z()))<anaCuts::qaDca)) continue;
       bool isprimary = trk->isPrimary();
@@ -628,8 +628,8 @@ Int_t StPicoDstarMixedMaker::Make()
       bool tpcQaPion = fabs(trk->nSigmaPion()) < anaCuts::qaTpcPion;
       //global
       //runbyrunQA
-      //pid performance 
-      //if (tofQaPion && ptot<1) pTof->Fill(runnum[mRunId],(1./beta)); 
+      //pid performance
+      //if (tofQaPion && ptot<1) pTof->Fill(runnum[mRunId],(1./beta));
       //if (tpcQaPion && ptot<0.5) {
       //  pDedx->Fill(runnum[mRunId],trk->dEdx());
      // }
@@ -639,13 +639,13 @@ Int_t StPicoDstarMixedMaker::Make()
       pgPhi->Fill(runnum[mRunId],trk->gMom().Phi());
       pgEta->Fill(runnum[mRunId],trk->gMom().Eta());
 
-      //primary 
+      //primary
       if (isprimary){
         ppDCA->Fill(runnum[mRunId],trk->gDCA(pVtx.x(),pVtx.y(),pVtx.z()));
-        if(tofmatch){pTof->Fill(runnum[mRunId],(1./beta));} 
+        if(tofmatch){pTof->Fill(runnum[mRunId],(1./beta));}
         pDedx->Fill(runnum[mRunId],trk->dEdx());
-        pNFits->Fill(runnum[mRunId],trk->nHitsFit()); 
-      
+        pNFits->Fill(runnum[mRunId],trk->nHitsFit());
+
         ppPt->Fill(runnum[mRunId],trk->pMom().Perp());
         ppEta->Fill(runnum[mRunId],trk->pMom().Eta());
         ppPhi->Fill(runnum[mRunId],trk->pMom().Phi());
@@ -658,7 +658,7 @@ Int_t StPicoDstarMixedMaker::Make()
         if(fabs(pow(trk->pMom().Mag()*sqrt(1-beta*beta)*1.0/beta,2) - 0.879)<0.02 && fabs(trk->nSigmaProton())<5){
            p_nSigmaProton->Fill(runnum[mRunId],trk->nSigmaProton());
         }
-        
+
 
 
       int pbemcId = trk->bemcPidTraitsIndex();
@@ -677,8 +677,8 @@ Int_t StPicoDstarMixedMaker::Make()
             ph_bemcdz->Fill(runnum[mRunId],pbemcdz);
             float pbemcDphi = pbemctrait->bemcPhiDist();
             ph_bemcDphi->Fill(runnum[mRunId],pbemcDphi);
-            float pE0 = pbemctrait->bemcE0(); 
-            ph_p_E0->Fill(runnum[mRunId],trk->gMom().Mag()*1.0/pE0); 
+            float pE0 = pbemctrait->bemcE0();
+            ph_p_E0->Fill(runnum[mRunId],trk->gMom().Mag()*1.0/pE0);
            }
       }
     int pmtdId = trk->mtdPidTraitsIndex();
@@ -704,11 +704,11 @@ Int_t StPicoDstarMixedMaker::Make()
           float pbtofnSigmaProton = pbtoftrait->nSigmaProton();
           float pbtofYLocal = pbtoftrait->btofYLocal();
           float pbtofZLocal = pbtoftrait->btofZLocal();
-          //float pbtofdeltaY = pbtoftrait->deltaY(); 
+          //float pbtofdeltaY = pbtoftrait->deltaY();
           //cout<<"btofdeltaY: "<<pbtofdeltaY<<endl;
 
-          p_btofYLocal->Fill(runnum[mRunId],pbtofYLocal);  
-          p_btofZLocal->Fill(runnum[mRunId],pbtofZLocal);  
+          p_btofYLocal->Fill(runnum[mRunId],pbtofYLocal);
+          p_btofZLocal->Fill(runnum[mRunId],pbtofZLocal);
 
           h_Vz_btofZLocal->Fill(mVz,pbtofZLocal);
           h_Vz_btofYLocal->Fill(mVz,pbtofYLocal);
@@ -724,20 +724,20 @@ Int_t StPicoDstarMixedMaker::Make()
         }
        }
     }
-     
+
     int petofId = trk->eTofPidTraitsIndex();
     if(petofId>=0){
       StPicoETofPidTraits * petoftrait = picoDst->etofPidTraits(petofId);
-      //int etofmatch = petoftrait->matchFlag();         
+      //int etofmatch = petoftrait->matchFlag();
       if(petoftrait){
          float petofbeta = 0;
          float petofdeltaX = 0;
-         float petofdeltaY = 0; 
-         petofbeta = petoftrait->beta(); 
-         petofdeltaX = petoftrait->deltaX(); 
-         petofdeltaY = petoftrait->deltaY(); 
-         int etofmatch = petoftrait->matchFlag();         
-     
+         float petofdeltaY = 0;
+         petofbeta = petoftrait->beta();
+         petofdeltaX = petoftrait->deltaX();
+         petofdeltaY = petoftrait->deltaY();
+         int etofmatch = petoftrait->matchFlag();
+
          if(etofmatch == 1 || etofmatch == 2){
             if(petofbeta != 0){p_ETof_beta->Fill(runnum[mRunId],1.0/petofbeta);}
             p_ETof_deltaX->Fill(runnum[mRunId],petofdeltaX);
@@ -747,18 +747,18 @@ Int_t StPicoDstarMixedMaker::Make()
             h_ETof_deltaX->Fill(petofdeltaX);
             h_ETof_deltaY->Fill(petofdeltaY);
          }
-      
+
       }
     }
 
 
       }
     }
-  } //runbyrun QA 
+  } //runbyrun QA
 
 
   electroninfo.clear();
-  positroninfo.clear();  
+  positroninfo.clear();
   kaoninfo_pos.clear();
   kaoninfo_neg.clear();
   pioninfo_pos.clear();
@@ -780,15 +780,15 @@ Int_t StPicoDstarMixedMaker::Make()
   if (QA && vzcut && vrcut  &&  vpdvzcut && verrcut ) hpassevtcut->Fill(4);
   bool refusepileup = picoEvent->refMult()<picoEvent->btofTrayMultiplicity()*0.36+45;
   bool refusebadtof = picoEvent->refMult()>picoEvent->btofTrayMultiplicity()*0.28-115;
-  bool passCentralityCut = refusepileup && refusebadtof  && verrcut && vrcut && fabs(pVtx.z()) < 10; 
+  bool passCentralityCut = refusepileup && refusebadtof  && verrcut && vrcut && fabs(pVtx.z()) < 10;
   if(QA)if (passCentralityCut) hrefmult->Fill(picoEvent->refMult());
   if(QA)if (passCentralityCut) hrefmult_Pos->Fill(picoEvent->refMultPos());
   if(QA)if (passCentralityCut) hrefmult_Neg->Fill(picoEvent->refMultNeg());
   if (isGoodEvent(picoEvent)){
     // StThreeVectorF pVtx = picoEvent->primaryVertex();
-    
-    
-   // if(mRunId < 22106001) return 0;   
+
+
+   // if(mRunId < 22106001) return 0;
 
     if(DEBUG) cout<<"star event QA"<<endl;
     TVector3 pVtx = picoEvent->primaryVertex();
@@ -804,14 +804,14 @@ Int_t StPicoDstarMixedMaker::Make()
       hVxVyVz->Fill(mVx,mVy,mVz);
       hVr->Fill(sqrt(mVy*mVy+mVx*mVx));
       hVzVpdVz->Fill(mVpdVz-mVz);
-      h_Vz_VpdVz->Fill(mVz,mVpdVz);  
-      hnTofMult->Fill(picoEvent->btofTrayMultiplicity());  
-      hnTofMulvsRef->Fill(picoEvent->refMult(),picoEvent->btofTrayMultiplicity());  
-      hnTofMatch->Fill(picoEvent->nBTOFMatch());  
-      hnTofMatvsRef->Fill(picoEvent->refMult(),picoEvent->nBTOFMatch());  
+      h_Vz_VpdVz->Fill(mVz,mVpdVz);
+      hnTofMult->Fill(picoEvent->btofTrayMultiplicity());
+      hnTofMulvsRef->Fill(picoEvent->refMult(),picoEvent->btofTrayMultiplicity());
+      hnTofMatch->Fill(picoEvent->nBTOFMatch());
+      hnTofMatvsRef->Fill(picoEvent->refMult(),picoEvent->nBTOFMatch());
     }
     double ntofhits = 0;
-    //    int ntrack_tof_hits =0; 
+    //    int ntrack_tof_hits =0;
     int nTracks = picoDst->numberOfTracks();
     for (int itrack=0;itrack<nTracks;itrack++){
       StPicoTrack* trk = picoDst->track(itrack);
@@ -837,7 +837,7 @@ Int_t StPicoDstarMixedMaker::Make()
       bool goodtrack = isGoodTrack(trk,trk->gDCA(mVx,mVy,mVz));
       if (!goodtrack) continue;
       if (!isprimary) continue;
-      
+
       if(QA)hpDca->Fill(trk->gDCA(mVx,mVy,mVz));
 
       int bemcId = trk->bemcPidTraitsIndex();
@@ -856,11 +856,11 @@ Int_t StPicoDstarMixedMaker::Make()
             h_bemcdz->Fill(bemcdz);
             float bemcDphi = bemctrait->bemcPhiDist();
             h_bemcDphi->Fill(bemcDphi);
-            float E0 = bemctrait->bemcE0(); 
-            h_p_E0->Fill(trk->gMom().Mag()*1.0/E0); 
+            float E0 = bemctrait->bemcE0();
+            h_p_E0->Fill(trk->gMom().Mag()*1.0/E0);
           }
       }
-     
+
       int mtdId = trk->mtdPidTraitsIndex();
       if(mtdId>=0 && QA){
         StPicoMtdPidTraits * mtdtrait = picoDst->mtdPidTraits(mtdId);
@@ -876,7 +876,7 @@ Int_t StPicoDstarMixedMaker::Make()
       }
 
       if(QA){
-        // StThreeVectorF mom = trk->pMom();  
+        // StThreeVectorF mom = trk->pMom();
         if(trk->charge()>0){
           hpt_Pos_cut->Fill(mom.Perp());
           hGpt_Pos_cut->Fill(trk->gMom().Perp());
@@ -896,10 +896,10 @@ Int_t StPicoDstarMixedMaker::Make()
         hnHitsDedx_cut->Fill(trk->nHitsDedx()*trk->charge());
         h_nHitsDedx_p->Fill(mom.Mag()*trk->charge(),trk->nHitsDedx());
       }
-      
+
       double beta = getTofBeta(trk);
       bool tofmatch = (beta!=std::numeric_limits<float>::quiet_NaN()) && beta>0;
-      
+
       double p = mom.Mag();
       int charge = trk->charge();
       double nSigmaE = trk->nSigmaElectron();
@@ -911,21 +911,21 @@ Int_t StPicoDstarMixedMaker::Make()
       h_nSigmaPion_Inclusive->Fill(nSigmaPi);
       h_nSigmaKaon_Inclusive->Fill(nSigmaK);
       h_nSigmaProton_Inclusive->Fill(nSigmaP);
-      
+
       // Fill 2D inclusive histograms vs p*charge
       h_nSigmaVsPcharge_Electron->Fill(p * charge, nSigmaE);
       h_nSigmaVsPcharge_Pion->Fill(p * charge, nSigmaPi);
       h_nSigmaVsPcharge_Kaon->Fill(p * charge, nSigmaK);
       h_nSigmaVsPcharge_Proton->Fill(p * charge, nSigmaP);
 
-	    //choose inclusive electron
+	//choose inclusive electron
       // bool isTPCElectron =  trk->nSigmaElectron()<2 && trk->nSigmaElectron()>0.75;
       bool isTPCElectron=0;
       if (mom.Mag()>0.8) isTPCElectron =  trk->nSigmaElectron()<2 && trk->nSigmaElectron()>-0.75;
       else isTPCElectron = trk->nSigmaElectron()<2 && trk->nSigmaElectron()>(3*mom.Mag()-3.15);
       bool isTOFElectron = tofmatch?fabs(1./beta-1.)<0.025:false;
-  
-      h_nSigmaElectron_P_tpc->Fill(mom.Mag(),trk->nSigmaElectron());      
+
+      h_nSigmaElectron_P_tpc->Fill(mom.Mag(),trk->nSigmaElectron());
 
       // --- Pion ---
       bool isTpcPion = fabs(nSigmaPi) < 2.0;
@@ -965,12 +965,12 @@ Int_t StPicoDstarMixedMaker::Make()
 
 
       if (isTOFElectron && isTPCElectron) {
-        if(QA) hnEvsEtavsVz->Fill(mom.Eta(),mVz); 
+        if(QA) hnEvsEtavsVz->Fill(mom.Eta(),mVz);
         if(QA) hnEvsPhivsVz->Fill(mom.Phi(),mVz);
-        
+
         if(QA) p_nSigmaE->Fill(runnum[mRunId],trk->nSigmaElectron());
         //p_nSigmaTofE->Fill(runnum[mRunId],pbtofnSigmaE);
-        
+
         if(trk->charge()<0 && tofmatch)
          {
             particleinfo.charge = trk->charge();
@@ -992,7 +992,7 @@ Int_t StPicoDstarMixedMaker::Make()
              current_eMinus[current_nEMinus].SetPz(mom.z());
              current_eMinus[current_nEMinus].SetE(sqrt(pow(M_electron,2.0)+pow(mom.Mag(),2.0)));
              current_nEMinus++;*/
-        }     
+        }
 
         if(trk->charge()>0 && tofmatch){
 
@@ -1083,16 +1083,16 @@ Int_t StPicoDstarMixedMaker::Make()
           pipos.p3 = mom.Z();
           pioninfo_pos.push_back(pipos);
         }
-      } 
+      }
 
       if (tofmatch) {
         ntofhits++;
         if(QA) hinvBetavsP->Fill(mom.Mag(),1./beta);
-        
+
         if(fabs(1.0/beta - 1) < 0.025)
         {
-         h_nSigmaElectron_P->Fill(mom.Mag(),trk->nSigmaElectron()); 
-        }       
+         h_nSigmaElectron_P->Fill(mom.Mag(),trk->nSigmaElectron());
+        }
 
        // hinvBetavsP_RunID[runnum[mRunId]]->Fill(mom.Mag(),1./beta);
 
@@ -1102,7 +1102,7 @@ Int_t StPicoDstarMixedMaker::Make()
     //        for(int itrack_tof_hits=0;itrack_tof_hits<ntrack_tof_hits;itrack_tof_hits++)
     //           {
     //            StPicoBTofHit* tofhit = trk->btofHit(itrack_tof_hits);
-    //            ModuleId_1->Fill(tofhit->module()); 
+    //            ModuleId_1->Fill(tofhit->module());
     //           }
     //   }
 
@@ -1131,7 +1131,7 @@ Int_t StPicoDstarMixedMaker::Make()
             //ModuleId_1->Fill((tofid%192)/6+1);
          }
 
-         
+
         if (isTOFElectron && isTPCElectron) {
 
         if(QA) p_nSigmaTofE->Fill(runnum[mRunId],tofPid->nSigmaElectron());
@@ -1174,7 +1174,7 @@ Int_t StPicoDstarMixedMaker::Make()
       if(QA) h_mTpc->Fill(mom.Mag()*trk->charge(),pow(mom.Mag()*sqrt(1-beta*beta)*1.0/beta,2));
     }
     if(QA) hnTofHitvsRef->Fill(ntofhits,picoEvent->refMult());
-    
+
       int x=0;
       int y=0;
       int num_electron = electroninfo.size();
@@ -1197,7 +1197,7 @@ Int_t StPicoDstarMixedMaker::Make()
                     particle2_4V.SetPz(electroninfo[y].p3);
                     particle2_4V.SetE(electroninfo[y].energy);
                     eepair = particle1_4V + particle2_4V;
-                    
+
                     //if(eepair.Perp()<0.2){hMeeCount_like1->Fill(eepair.M());}
                     hMeeCount_like1->Fill(eepair.M());
                     hMeeCountPt_like1->Fill(eepair.M(),eepair.Perp());
@@ -1205,7 +1205,7 @@ Int_t StPicoDstarMixedMaker::Make()
                     //if(eepair.Perp()<=10){hMeelike1_Pt_Cent->Fill(eepair.Perp(),mCentrality,eepair.M());}
                   }
          }
-     
+
       for(x=0;x<num_positron;x++)
          {
              particle1_4V.SetPx(positroninfo[x].p1);
@@ -1245,88 +1245,80 @@ Int_t StPicoDstarMixedMaker::Make()
                   }
          }
 
-    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// +++ ADD THE NEW D0 RECONSTRUCTION LOGIC HERE +++
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // =========================================================================
+        // =================  FAST, OPTIMIZED D0 RECONSTRUCTION ====================
+        // =========================================================================
 
-double bField = picoEvent->bField();
+        double bField = picoEvent->bField();
 
-    StPicoTrack* trk1 = picoDst->track(i);
+        std::vector<int> posPionIndices;
+        std::vector<int> negPionIndices;
+        std::vector<int> posKaonIndices;
+        std::vector<int> negKaonIndices;
 
-    if (trk1->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
+        for (int i = 0; i < nTracks; ++i) {
+            StPicoTrack* trk = picoDst->track(i);
 
-    for (int j = i + 1; j < nTracks; ++j) { // Start from i+1 to avoid double counting
-        StPicoTrack* trk2 = picoDst->track(j);
+            // Apply single-track cuts first to reject junk tracks
+            if (!isGoodTrack(trk, trk->gDCA(pVtx.x(), pVtx.y(), pVtx.z()))) continue;
+            if (trk->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
 
-        // Apply daughter track cuts - FIXED isGoodTrack call
-        if (!isGoodTrack(trk2, trk2->gDCA(pVtx.x(), pVtx.y(), pVtx.z()))) continue;
-        if (trk2->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
-
-        // --- Check charge sign ---
-        bool isOppositeSign = (trk1->charge() * trk2->charge() < 0);
-        bool isLikeSign = (trk1->charge() * trk2->charge() > 0);
-
-        if (!isOppositeSign && !isLikeSign) continue; // Skip neutral tracks
-
-        // --- Particle Identification ---
-        StPicoTrack *trk_K = nullptr, *trk_pi = nullptr;
-
-        if (isKaon(trk1) && isPion(trk2)) {
-            trk_K = trk1;
-            trk_pi = trk2;
-        } else if (isPion(trk1) && isKaon(trk2)) {
-            trk_K = trk2;
-            trk_pi = trk1;
-        } else {
-            continue; // Pair is not a K-pi candidate
-        }
-
-        // --- Topological Cuts (Applied to both Signal and Background) ---
-        StPicoPhysicalHelix kaonHelix = trk_K->helix(bField);
-        StPicoPhysicalHelix pionHelix = trk_pi->helix(bField);
-
-        pair<double, double> s = kaonHelix.pathLengths(pionHelix);
-        TVector3 dcaVtx = (kaonHelix.at(s.first) + pionHelix.at(s.second)) * 0.5;
-        double dcaDaughters = (kaonHelix.at(s.first) - pionHelix.at(s.second)).Mag();
-        
-        // These cuts are crucial for signal
-        if (dcaDaughters > 0.01) continue; // DCA between daughters < 100 um
-
-        TVector3 d0Mom = trk_K->pMom() + trk_pi->pMom();
-        double decayLength = (dcaVtx - pVtx).Mag();
-        if (decayLength < 0.02) continue; // Decay length > 200 um
-
-        double cosPointingAngle = d0Mom.Dot(dcaVtx - pVtx) / (d0Mom.Mag() * (dcaVtx - pVtx).Mag());
-        if (cosPointingAngle < 0.98) continue;
-
-        if (trk_K->gDCA(pVtx.x(), pVtx.y(), pVtx.z()) < 0.01) continue; // Kaon DCA to PV > 100 um
-        if (trk_pi->gDCA(pVtx.x(), pVtx.y(), pVtx.z()) < 0.01) continue; // Pion DCA to PV > 100 um
-
-        // --- Calculate Invariant Mass and Fill Histograms ---
-        TLorentzVector kaon4V, pion4V;
-        kaon4V.SetVectM(trk_K->pMom(), M_KAON_PLUS);
-        pion4V.SetVectM(trk_pi->pMom(), M_PION_PLUS);
-        TLorentzVector d0pair = kaon4V + pion4V;
-
-        if (d0pair.Perp() < 1.5) continue; // D0 candidate pT > 1.5 GeV/c
-
-        // Fill Signal or Background histograms based on charge
-        if (isOppositeSign) {
-            hMkpiCount->Fill(d0pair.M());
-            hMkpiCountPt->Fill(d0pair.M(), d0pair.Perp());
-        } else if (isLikeSign) {
-            // Distinguish between -- and ++ pairs if needed
-            if (trk_K->charge() < 0) { // K-pi-
-                hMkpiCount_like1->Fill(d0pair.M());
-                hMkpiCountPt_like1->Fill(d0pair.M(), d0pair.Perp());
-            } else { // K+pi+
-                hMkpiCount_like2->Fill(d0pair.M());
-                hMkpiCountPt_like2->Fill(d0pair.M(), d0pair.Perp());
+            // Check if it's a candidate and store its index
+            if (isPion(trk)) {
+                if (trk->charge() > 0) posPionIndices.push_back(i);
+                else negPionIndices.push_back(i);
+            }
+            // Use 'else if' to prevent a track being both a pion and kaon
+            else if (isKaon(trk)) {
+                if (trk->charge() > 0) posKaonIndices.push_back(i);
+                else negKaonIndices.push_back(i);
             }
         }
-    } // end inner track loop
-} //Good Event
-}
+
+        // --- Pass 2: Pairing (Now much faster!) ---
+
+        // 1. Signal: K- pi+
+        for (int i_k : negKaonIndices) {
+            for (int i_p : posPionIndices) {
+                StPicoTrack* trk_K = picoDst->track(i_k);
+                StPicoTrack* trk_pi = picoDst->track(i_p);
+                analyzeD0Pair(trk_K, trk_pi, pVtx, bField);
+            }
+        }
+
+        // 2. Signal: K+ pi-
+        for (int i_k : posKaonIndices) {
+            for (int i_p : negPionIndices) {
+                StPicoTrack* trk_K = picoDst->track(i_k);
+                StPicoTrack* trk_pi = picoDst->track(i_p);
+                analyzeD0Pair(trk_K, trk_pi, pVtx, bField);
+            }
+        }
+
+        // 3. Like-Sign Background: K- pi-
+        for (size_t i = 0; i < negKaonIndices.size(); ++i) {
+            for (size_t j = 0; j < negPionIndices.size(); ++j) {
+                // To avoid self-pairing if a track was somehow ID'd as both
+                if (negKaonIndices[i] == negPionIndices[j]) continue;
+                StPicoTrack* trk_K = picoDst->track(negKaonIndices[i]);
+                StPicoTrack* trk_pi = picoDst->track(negPionIndices[j]);
+                analyzeD0Pair(trk_K, trk_pi, pVtx, bField);
+            }
+        }
+
+        // 4. Like-Sign Background: K+ pi+
+        for (size_t i = 0; i < posKaonIndices.size(); ++i) {
+            for (size_t j = 0; j < posPionIndices.size(); ++j) {
+                if (posKaonIndices[i] == posPionIndices[j]) continue;
+                StPicoTrack* trk_K = picoDst->track(posKaonIndices[i]);
+                StPicoTrack* trk_pi = picoDst->track(posPionIndices[j]);
+                analyzeD0Pair(trk_K, trk_pi, pVtx, bField);
+            }
+        }
+
+    } //Good Event
+
+  }
   if(DEBUG) cout<<"end make"<<endl;
   return kStOK;
 }
@@ -1342,7 +1334,7 @@ bool StPicoDstarMixedMaker::isGoodTrigger(StPicoEvent const* const picoEvent) co
 bool StPicoDstarMixedMaker::isGoodTrack(StPicoTrack const* trk, float dca) const
 {
   // StThreeVectorF const vtx = mPicoDstMaker->picoDst()->event()->primaryVertex();
-  return trk->gPt() > anaCuts::GPt && fabs(trk->nHitsFit()) >= anaCuts::NHitsFit && 
+  return trk->gPt() > anaCuts::GPt && fabs(trk->nHitsFit()) >= anaCuts::NHitsFit &&
     fabs(trk->gMom().Eta())<anaCuts::Eta &&
     fabs(trk->nHitsFit()*1.0/trk->nHitsMax())>=anaCuts::NHitsFit2Poss &&
     fabs(trk->nHitsDedx())>=anaCuts::NHitsDedx && fabs(dca)<=anaCuts::Dca;
@@ -1352,7 +1344,7 @@ bool StPicoDstarMixedMaker::isGoodTrack(StPicoTrack const* trk, float dca) const
 bool StPicoDstarMixedMaker::isGoodQaTrack(StPicoTrack const* const trk) const
 {
   // StThreeVectorF vtx = mPicoDstMaker->picoDst()->event()->primaryVertex();
-  return trk->gPt() > anaCuts::qaGPt && fabs(trk->nHitsFit()) >= anaCuts::qaNHitsFit && 
+  return trk->gPt() > anaCuts::qaGPt && fabs(trk->nHitsFit()) >= anaCuts::qaNHitsFit &&
     fabs(trk->gMom().Eta())<anaCuts::qaEta &&
     fabs(trk->nHitsFit()*1.0/trk->nHitsMax())>=anaCuts::NHitsFit2Poss &&
     // fabs(trk->nHitsDedx())>=anaCuts::qaNHitsDedx && fabs(trk->gDCA(vtx.x(),vtx.y(),vtx.z()))<=anaCuts::qaDca;
@@ -1404,7 +1396,7 @@ float StPicoDstarMixedMaker::getTofBeta(StPicoTrack const* const trk) const
         else beta = std::numeric_limits<float>::quiet_NaN();
       }
     }
-  } 
+  }
   return beta;
 }
 
@@ -1433,7 +1425,7 @@ bool StPicoDstarMixedMaker::isKaon(StPicoTrack const* const trk) const
     bool tofmatch = (beta != std::numeric_limits<float>::quiet_NaN()) && beta > 0;
 
     bool isTpcKaon = fabs(trk->nSigmaKaon()) < 2.0;
-    
+
     bool isTofKaon = false;
     if (tofmatch) {
         float beta_expected = sqrt(p*p + M_KAON_PLUS*M_KAON_PLUS) / p;
@@ -1442,4 +1434,62 @@ bool StPicoDstarMixedMaker::isKaon(StPicoTrack const* const trk) const
         }
     }
     return isTpcKaon && isTofKaon;
+}
+
+void StPicoDstarMixedMaker::analyzeD0Pair(StPicoTrack* trk1, StPicoTrack* trk2, const TVector3& pVtx, double bField)
+{
+    // --- Determine which is the Kaon and which is the Pion ---
+    StPicoTrack *trk_K = nullptr, *trk_pi = nullptr;
+    if (isKaon(trk1) && isPion(trk2)) {
+        trk_K = trk1;
+        trk_pi = trk2;
+    } else if (isPion(trk1) && isKaon(trk2)) {
+        trk_K = trk2;
+        trk_pi = trk1;
+    } else {
+        return; // Should not happen if called correctly
+    }
+
+    // --- Topological Cuts ---
+    StPicoPhysicalHelix kaonHelix = trk_K->helix(bField);
+    StPicoPhysicalHelix pionHelix = trk_pi->helix(bField);
+
+    pair<double, double> s = kaonHelix.pathLengths(pionHelix);
+    TVector3 dcaVtx = (kaonHelix.at(s.first) + pionHelix.at(s.second)) * 0.5;
+    double dcaDaughters = (kaonHelix.at(s.first) - pionHelix.at(s.second)).Mag();
+
+    if (dcaDaughters > 0.01) return;
+
+    TVector3 d0Mom = trk_K->pMom() + trk_pi->pMom();
+    double decayLength = (dcaVtx - pVtx).Mag();
+    if (decayLength < 0.02) return;
+
+    double cosPointingAngle = d0Mom.Dot(dcaVtx - pVtx) / (d0Mom.Mag() * (dcaVtx - pVtx).Mag());
+    if (cosPointingAngle < 0.98) return;
+
+    if (trk_K->gDCA(pVtx.x(), pVtx.y(), pVtx.z()) < 0.01) return;
+    if (trk_pi->gDCA(pVtx.x(), pVtx.y(), pVtx.z()) < 0.01) return;
+
+    // --- Calculate Invariant Mass and Fill Histograms ---
+    TLorentzVector kaon4V, pion4V;
+    kaon4V.SetVectM(trk_K->pMom(), M_KAON_PLUS);
+    pion4V.SetVectM(trk_pi->pMom(), M_PION_PLUS);
+    TLorentzVector d0pair = kaon4V + pion4V;
+
+    if (d0pair.Perp() < 1.5) return;
+
+    // --- Fill Histograms based on charge ---
+    bool isOppositeSign = (trk_K->charge() * trk_pi->charge() < 0);
+    if (isOppositeSign) {
+        hMkpiCount->Fill(d0pair.M());
+        hMkpiCountPt->Fill(d0pair.M(), d0pair.Perp());
+    } else { // Like-sign background
+        if (trk_K->charge() < 0) { // K-pi-
+            hMkpiCount_like1->Fill(d0pair.M());
+            hMkpiCountPt_like1->Fill(d0pair.M(), d0pair.Perp());
+        } else { // K+pi+
+            hMkpiCount_like2->Fill(d0pair.M());
+            hMkpiCountPt_like2->Fill(d0pair.M(), d0pair.Perp());
+        }
+    }
 }

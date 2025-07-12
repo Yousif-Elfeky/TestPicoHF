@@ -68,6 +68,7 @@ class StPicoDstarMixedMaker : public StMaker
     bool isBadrun(Int_t runId);
     bool isPion(StPicoTrack const* const trk) const;
     bool isKaon(StPicoTrack const* const trk) const;
+    void analyzeD0Pair(StPicoTrack* trk1, StPicoTrack* trk2, const TVector3& pVtx, double bField);
     
     // -------------- USER variables -------------------------
     // add your member variables here. 
