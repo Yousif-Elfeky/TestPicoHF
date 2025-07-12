@@ -918,7 +918,7 @@ Int_t StPicoDstarMixedMaker::Make()
       h_nSigmaVsPcharge_Kaon->Fill(p * charge, nSigmaK);
       h_nSigmaVsPcharge_Proton->Fill(p * charge, nSigmaP);
 
-	//choose inclusive electron
+	    //choose inclusive electron
       // bool isTPCElectron =  trk->nSigmaElectron()<2 && trk->nSigmaElectron()>0.75;
       bool isTPCElectron=0;
       if (mom.Mag()>0.8) isTPCElectron =  trk->nSigmaElectron()<2 && trk->nSigmaElectron()>-0.75;
@@ -1251,12 +1251,8 @@ Int_t StPicoDstarMixedMaker::Make()
 
 double bField = picoEvent->bField();
 
-// --- Loop over all track pairs to form D0 candidates ---
-for (int i = 0; i < nTracks; ++i) {
     StPicoTrack* trk1 = picoDst->track(i);
 
-    // Apply daughter track cuts - FIXED isGoodTrack call
-    if (!isGoodTrack(trk1, trk1->gDCA(pVtx.x(), pVtx.y(), pVtx.z()))) continue;
     if (trk1->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
 
     for (int j = i + 1; j < nTracks; ++j) { // Start from i+1 to avoid double counting
@@ -1329,7 +1325,6 @@ for (int i = 0; i < nTracks; ++i) {
             }
         }
     } // end inner track loop
-} // end outer track loop
 } //Good Event
 }
   if(DEBUG) cout<<"end make"<<endl;
