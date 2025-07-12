@@ -206,7 +206,7 @@ class StPicoDstarMixedMaker : public StMaker
     TH2F* hMkpiCountPt;//unlike sign
     TH2F* hMkpiCountPt_like1;//like sign electron
     TH2F* hMkpiCountPt_like2;//like sign positron
-    float M_k=0.493677;//GeV
+    float M_kaon=0.493677;//GeV
     float M_pion=0.13957;
 
     //MRPC ToF 

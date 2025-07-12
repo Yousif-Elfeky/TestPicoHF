@@ -821,7 +821,7 @@ Int_t StPicoDstarMixedMaker::Make()
 
       if(QA){
         hgDca->Fill(trk->gDCA(mVx,mVy,mVz));
-        if(QAtrk->charge()>0){
+        if(trk->charge()>0){
           hpt_Pos->Fill(mom.Perp());
           hGpt_Pos->Fill(trk->gMom().Perp());
         }else{
