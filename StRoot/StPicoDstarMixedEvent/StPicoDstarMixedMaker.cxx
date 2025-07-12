@@ -1245,87 +1245,95 @@ Int_t StPicoDstarMixedMaker::Make()
                   }
          }
 
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++ ADD THE NEW D0 RECONSTRUCTION LOGIC HERE +++
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  // ----------- K#pi invariant mass (D^{0}) ------------
-  int num_kneg = kaoninfo_neg.size();
-  int num_kpos = kaoninfo_pos.size();
-  int num_pineg = pioninfo_neg.size();
-  int num_pipos = pioninfo_pos.size();
+TVector3 pVtx = picoEvent->primaryVertex();
+double bField = picoEvent->bField();
+int nTracks = picoDst->numberOfTracks();
 
-  TLorentzVector kpipair(0,0,0,0);
+  // --- Loop over all track pairs to form D0 candidates ---
+  for (int i = 0; i < nTracks; ++i) {
+      StPicoTrack* trk1 = picoDst->track(i);
 
-  for(x=0; x<num_kneg; x++){
-    particle1_4V.SetPx(kaoninfo_neg[x].p1);
-    particle1_4V.SetPy(kaoninfo_neg[x].p2);
-    particle1_4V.SetPz(kaoninfo_neg[x].p3);
-    particle1_4V.SetE(kaoninfo_neg[x].energy);
-    for(y=0; y<num_pipos; y++){
-      particle2_4V.SetPx(pioninfo_pos[y].p1);
-      particle2_4V.SetPy(pioninfo_pos[y].p2);
-      particle2_4V.SetPz(pioninfo_pos[y].p3);
-      particle2_4V.SetE(pioninfo_pos[y].energy);
-      kpipair = particle1_4V + particle2_4V;
-      if(kpipair.Perp() < 1.5) continue;
-      hMkpiCount->Fill(kpipair.M());
-      hMkpiCountPt->Fill(kpipair.M(), kpipair.Perp());
-    }
-  }
+      // Apply daughter track cuts
+      if (!isGoodTrack(trk1, trk1->gDCA(pVtx))) continue;
+      if (trk1->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
 
-  for(x=0; x<num_kpos; x++){
-    particle1_4V.SetPx(kaoninfo_pos[x].p1);
-    particle1_4V.SetPy(kaoninfo_pos[x].p2);
-    particle1_4V.SetPz(kaoninfo_pos[x].p3);
-    particle1_4V.SetE(kaoninfo_pos[x].energy);
-    for(y=0; y<num_pineg; y++){
-      particle2_4V.SetPx(pioninfo_neg[y].p1);
-      particle2_4V.SetPy(pioninfo_neg[y].p2);
-      particle2_4V.SetPz(pioninfo_neg[y].p3);
-      particle2_4V.SetE(pioninfo_neg[y].energy);
-      kpipair = particle1_4V + particle2_4V;
-      if(kpipair.Perp() < 1.5) continue;
-      hMkpiCount->Fill(kpipair.M());
-      hMkpiCountPt->Fill(kpipair.M(), kpipair.Perp());
-    }
-  }
+      for (int j = i + 1; j < nTracks; ++j) { // Start from i+1 to avoid double counting
+          StPicoTrack* trk2 = picoDst->track(j);
 
-  // like-sign background: K-#pi- (like1)
-  for(x=0; x<num_kneg; x++){
-    particle1_4V.SetPx(kaoninfo_neg[x].p1);
-    particle1_4V.SetPy(kaoninfo_neg[x].p2);
-    particle1_4V.SetPz(kaoninfo_neg[x].p3);
-    particle1_4V.SetE(kaoninfo_neg[x].energy);
-    for(y=0; y<num_pineg; y++){
-      particle2_4V.SetPx(pioninfo_neg[y].p1);
-      particle2_4V.SetPy(pioninfo_neg[y].p2);
-      particle2_4V.SetPz(pioninfo_neg[y].p3);
-      particle2_4V.SetE(pioninfo_neg[y].energy);
-      kpipair = particle1_4V + particle2_4V;
-      if(kpipair.Perp() < 1.5) continue;
-      hMkpiCount_like1->Fill(kpipair.M());
-      hMkpiCountPt_like1->Fill(kpipair.M(), kpipair.Perp());
-    }
-  }
+          // Apply daughter track cuts
+          if (!isGoodTrack(trk2, trk2->gDCA(pVtx))) continue;
+          if (trk2->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
 
-  // like-sign background: K+#pi+ (like2)
-  for(x=0; x<num_kpos; x++){
-    particle1_4V.SetPx(kaoninfo_pos[x].p1);
-    particle1_4V.SetPy(kaoninfo_pos[x].p2);
-    particle1_4V.SetPz(kaoninfo_pos[x].p3);
-    particle1_4V.SetE(kaoninfo_pos[x].energy);
-    for(y=0; y<num_pipos; y++){
-      particle2_4V.SetPx(pioninfo_pos[y].p1);
-      particle2_4V.SetPy(pioninfo_pos[y].p2);
-      particle2_4V.SetPz(pioninfo_pos[y].p3);
-      particle2_4V.SetE(pioninfo_pos[y].energy);
-      kpipair = particle1_4V + particle2_4V;
-      if(kpipair.Perp() < 1.5) continue;
-      hMkpiCount_like2->Fill(kpipair.M());
-      hMkpiCountPt_like2->Fill(kpipair.M(), kpipair.Perp());
-    }
-  }
+          // --- Check charge sign ---
+          bool isOppositeSign = (trk1->charge() * trk2->charge() < 0);
+          bool isLikeSign = (trk1->charge() * trk2->charge() > 0);
 
+          if (!isOppositeSign && !isLikeSign) continue; // Skip neutral tracks
+
+          // --- Particle Identification ---
+          StPicoTrack *trk_K = nullptr, *trk_pi = nullptr;
+
+          if (isKaon(trk1) && isPion(trk2)) {
+              trk_K = trk1;
+              trk_pi = trk2;
+          } else if (isPion(trk1) && isKaon(trk2)) {
+              trk_K = trk2;
+              trk_pi = trk1;
+          } else {
+              continue; // Pair is not a K-pi candidate
+          }
+
+          // --- Topological Cuts (Applied to both Signal and Background) ---
+          StPicoPhysicalHelix kaonHelix = trk_K->helix(bField);
+          StPicoPhysicalHelix pionHelix = trk_pi->helix(bField);
+
+          pair<double, double> s = kaonHelix.pathLengths(pionHelix);
+          TVector3 dcaVtx = (kaonHelix.at(s.first) + pionHelix.at(s.second)) * 0.5;
+          double dcaDaughters = (kaonHelix.at(s.first) - pionHelix.at(s.second)).Mag();
+          
+          // These cuts are crucial for signal
+          if (dcaDaughters > 0.01) continue; // DCA between daughters < 100 um
+
+          TVector3 d0Mom = trk_K->pMom() + trk_pi->pMom();
+          double decayLength = (dcaVtx - pVtx).Mag();
+          if (decayLength < 0.02) continue; // Decay length > 200 um
+
+          double cosPointingAngle = d0Mom.Dot(dcaVtx - pVtx) / (d0Mom.Mag() * (dcaVtx - pVtx).Mag());
+          if (cosPointingAngle < 0.98) continue;
+
+          if (trk_K->gDCA(pVtx) < 0.01) continue; // Kaon DCA to PV > 100 um
+          if (trk_pi->gDCA(pVtx) < 0.01) continue; // Pion DCA to PV > 100 um
+
+          // --- Calculate Invariant Mass and Fill Histograms ---
+          TLorentzVector kaon4V, pion4V;
+          kaon4V.SetVectM(trk_K->pMom(), M_KAON_PLUS);
+          pion4V.SetVectM(trk_pi->pMom(), M_PION_PLUS);
+          TLorentzVector d0pair = kaon4V + pion4V;
+
+          if (d0pair.Perp() < 1.5) continue; // D0 candidate pT > 1.5 GeV/c
+
+          // Fill Signal or Background histograms based on charge
+          if (isOppositeSign) {
+              hMkpiCount->Fill(d0pair.M());
+              hMkpiCountPt->Fill(d0pair.M(), d0pair.Perp());
+          } else if (isLikeSign) {
+              // Distinguish between -- and ++ pairs if needed
+              if (trk_K->charge() < 0) { // K-pi-
+                  hMkpiCount_like1->Fill(d0pair.M());
+                  hMkpiCountPt_like1->Fill(d0pair.M(), d0pair.Perp());
+              } else { // K+pi+
+                  hMkpiCount_like2->Fill(d0pair.M());
+                  hMkpiCountPt_like2->Fill(d0pair.M(), d0pair.Perp());
+              }
+          }
+      } // end inner track loop
+    } // end outer track loop
   } //Good Event
- }
+}
   if(DEBUG) cout<<"end make"<<endl;
   return kStOK;
 }
@@ -1407,3 +1415,38 @@ float StPicoDstarMixedMaker::getTofBeta(StPicoTrack const* const trk) const
   return beta;
 }
 
+bool StPicoDstarMixedMaker::isPion(StPicoTrack const* const trk) const
+{
+    double p = trk->pMom().Mag();
+    double beta = getTofBeta(trk);
+    bool tofmatch = (beta != std::numeric_limits<float>::quiet_NaN()) && beta > 0;
+
+    bool isTpcPion = fabs(trk->nSigmaPion()) < 2.0;
+
+    bool isTofPion = false;
+    if (tofmatch) {
+        float beta_expected = sqrt(p*p + M_PION_PLUS*M_PION_PLUS) / p;
+        if (fabs(1.0/beta - beta_expected) < 0.03) {
+            isTofPion = true;
+        }
+    }
+    return isTpcPion && isTofPion;
+}
+
+bool StPicoDstarMixedMaker::isKaon(StPicoTrack const* const trk) const
+{
+    double p = trk->pMom().Mag();
+    double beta = getTofBeta(trk);
+    bool tofmatch = (beta != std::numeric_limits<float>::quiet_NaN()) && beta > 0;
+
+    bool isTpcKaon = fabs(trk->nSigmaKaon()) < 2.0;
+    
+    bool isTofKaon = false;
+    if (tofmatch) {
+        float beta_expected = sqrt(p*p + M_KAON_PLUS*M_KAON_PLUS) / p;
+        if (fabs(1.0/beta - beta_expected) < 0.03) {
+            isTofKaon = true;
+        }
+    }
+    return isTpcKaon && isTofKaon;
+}

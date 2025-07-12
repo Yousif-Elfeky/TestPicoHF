@@ -66,6 +66,8 @@ class StPicoDstarMixedMaker : public StMaker
     TString mInputFilesList;
     TString mOutFileBaseName;
     bool isBadrun(Int_t runId);
+    bool isPion(StPicoTrack const* const trk) const;
+    bool isKaon(StPicoTrack const* const trk) const;
     
     // -------------- USER variables -------------------------
     // add your member variables here. 
