@@ -1020,7 +1020,7 @@ Int_t StPicoDstarMixedMaker::Make()
          //current_nE++;
 
       // ---- Store Kaon candidates for D0 analysis ----
-      if (isTofKaon && isTpcKaon) {
+      if (isTofKaon && isTpcKaon && tofmatch) {
         if (charge < 0) {
           ParticleInfo kineg;
           kineg.charge = charge;
@@ -1084,7 +1084,7 @@ Int_t StPicoDstarMixedMaker::Make()
           pioninfo_pos.push_back(pipos);
         }
       } 
-           
+
       if (tofmatch) {
         ntofhits++;
         if(QA) hinvBetavsP->Fill(mom.Mag(),1./beta);
