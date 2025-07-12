@@ -24,6 +24,7 @@ class TNtuple;
 class StPicoTrack;
 class StPicoDstMaker;
 class StPicoEvent;
+class TVector3;
 
 struct ParticleInfo
 {
