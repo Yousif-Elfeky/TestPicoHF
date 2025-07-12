@@ -1249,90 +1249,88 @@ Int_t StPicoDstarMixedMaker::Make()
 // +++ ADD THE NEW D0 RECONSTRUCTION LOGIC HERE +++
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TVector3 pVtx = picoEvent->primaryVertex();
 double bField = picoEvent->bField();
-int nTracks = picoDst->numberOfTracks();
 
-  // --- Loop over all track pairs to form D0 candidates ---
-  for (int i = 0; i < nTracks; ++i) {
-      StPicoTrack* trk1 = picoDst->track(i);
+// --- Loop over all track pairs to form D0 candidates ---
+for (int i = 0; i < nTracks; ++i) {
+    StPicoTrack* trk1 = picoDst->track(i);
 
-      // Apply daughter track cuts
-      if (!isGoodTrack(trk1, trk1->gDCA(pVtx))) continue;
-      if (trk1->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
+    // Apply daughter track cuts - FIXED isGoodTrack call
+    if (!isGoodTrack(trk1, trk1->gDCA(pVtx.x(), pVtx.y(), pVtx.z()))) continue;
+    if (trk1->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
 
-      for (int j = i + 1; j < nTracks; ++j) { // Start from i+1 to avoid double counting
-          StPicoTrack* trk2 = picoDst->track(j);
+    for (int j = i + 1; j < nTracks; ++j) { // Start from i+1 to avoid double counting
+        StPicoTrack* trk2 = picoDst->track(j);
 
-          // Apply daughter track cuts
-          if (!isGoodTrack(trk2, trk2->gDCA(pVtx))) continue;
-          if (trk2->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
+        // Apply daughter track cuts - FIXED isGoodTrack call
+        if (!isGoodTrack(trk2, trk2->gDCA(pVtx.x(), pVtx.y(), pVtx.z()))) continue;
+        if (trk2->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
 
-          // --- Check charge sign ---
-          bool isOppositeSign = (trk1->charge() * trk2->charge() < 0);
-          bool isLikeSign = (trk1->charge() * trk2->charge() > 0);
+        // --- Check charge sign ---
+        bool isOppositeSign = (trk1->charge() * trk2->charge() < 0);
+        bool isLikeSign = (trk1->charge() * trk2->charge() > 0);
 
-          if (!isOppositeSign && !isLikeSign) continue; // Skip neutral tracks
+        if (!isOppositeSign && !isLikeSign) continue; // Skip neutral tracks
 
-          // --- Particle Identification ---
-          StPicoTrack *trk_K = nullptr, *trk_pi = nullptr;
+        // --- Particle Identification ---
+        StPicoTrack *trk_K = nullptr, *trk_pi = nullptr;
 
-          if (isKaon(trk1) && isPion(trk2)) {
-              trk_K = trk1;
-              trk_pi = trk2;
-          } else if (isPion(trk1) && isKaon(trk2)) {
-              trk_K = trk2;
-              trk_pi = trk1;
-          } else {
-              continue; // Pair is not a K-pi candidate
-          }
+        if (isKaon(trk1) && isPion(trk2)) {
+            trk_K = trk1;
+            trk_pi = trk2;
+        } else if (isPion(trk1) && isKaon(trk2)) {
+            trk_K = trk2;
+            trk_pi = trk1;
+        } else {
+            continue; // Pair is not a K-pi candidate
+        }
 
-          // --- Topological Cuts (Applied to both Signal and Background) ---
-          StPicoPhysicalHelix kaonHelix = trk_K->helix(bField);
-          StPicoPhysicalHelix pionHelix = trk_pi->helix(bField);
+        // --- Topological Cuts (Applied to both Signal and Background) ---
+        StPicoPhysicalHelix kaonHelix = trk_K->helix(bField);
+        StPicoPhysicalHelix pionHelix = trk_pi->helix(bField);
 
-          pair<double, double> s = kaonHelix.pathLengths(pionHelix);
-          TVector3 dcaVtx = (kaonHelix.at(s.first) + pionHelix.at(s.second)) * 0.5;
-          double dcaDaughters = (kaonHelix.at(s.first) - pionHelix.at(s.second)).Mag();
-          
-          // These cuts are crucial for signal
-          if (dcaDaughters > 0.01) continue; // DCA between daughters < 100 um
+        pair<double, double> s = kaonHelix.pathLengths(pionHelix);
+        TVector3 dcaVtx = (kaonHelix.at(s.first) + pionHelix.at(s.second)) * 0.5;
+        double dcaDaughters = (kaonHelix.at(s.first) - pionHelix.at(s.second)).Mag();
+        
+        // These cuts are crucial for signal
+        if (dcaDaughters > 0.01) continue; // DCA between daughters < 100 um
 
-          TVector3 d0Mom = trk_K->pMom() + trk_pi->pMom();
-          double decayLength = (dcaVtx - pVtx).Mag();
-          if (decayLength < 0.02) continue; // Decay length > 200 um
+        TVector3 d0Mom = trk_K->pMom() + trk_pi->pMom();
+        double decayLength = (dcaVtx - pVtx).Mag();
+        if (decayLength < 0.02) continue; // Decay length > 200 um
 
-          double cosPointingAngle = d0Mom.Dot(dcaVtx - pVtx) / (d0Mom.Mag() * (dcaVtx - pVtx).Mag());
-          if (cosPointingAngle < 0.98) continue;
+        double cosPointingAngle = d0Mom.Dot(dcaVtx - pVtx) / (d0Mom.Mag() * (dcaVtx - pVtx).Mag());
+        if (cosPointingAngle < 0.98) continue;
 
-          if (trk_K->gDCA(pVtx) < 0.01) continue; // Kaon DCA to PV > 100 um
-          if (trk_pi->gDCA(pVtx) < 0.01) continue; // Pion DCA to PV > 100 um
+        if (trk_K->gDCA(pVtx.x(), pVtx.y(), pVtx.z()) < 0.01) continue; // Kaon DCA to PV > 100 um
+        if (trk_pi->gDCA(pVtx.x(), pVtx.y(), pVtx.z()) < 0.01) continue; // Pion DCA to PV > 100 um
 
-          // --- Calculate Invariant Mass and Fill Histograms ---
-          TLorentzVector kaon4V, pion4V;
-          kaon4V.SetVectM(trk_K->pMom(), M_KAON_PLUS);
-          pion4V.SetVectM(trk_pi->pMom(), M_PION_PLUS);
-          TLorentzVector d0pair = kaon4V + pion4V;
+        // --- Calculate Invariant Mass and Fill Histograms ---
+        TLorentzVector kaon4V, pion4V;
+        kaon4V.SetVectM(trk_K->pMom(), M_KAON_PLUS);
+        pion4V.SetVectM(trk_pi->pMom(), M_PION_PLUS);
+        TLorentzVector d0pair = kaon4V + pion4V;
 
-          if (d0pair.Perp() < 1.5) continue; // D0 candidate pT > 1.5 GeV/c
+        if (d0pair.Perp() < 1.5) continue; // D0 candidate pT > 1.5 GeV/c
 
-          // Fill Signal or Background histograms based on charge
-          if (isOppositeSign) {
-              hMkpiCount->Fill(d0pair.M());
-              hMkpiCountPt->Fill(d0pair.M(), d0pair.Perp());
-          } else if (isLikeSign) {
-              // Distinguish between -- and ++ pairs if needed
-              if (trk_K->charge() < 0) { // K-pi-
-                  hMkpiCount_like1->Fill(d0pair.M());
-                  hMkpiCountPt_like1->Fill(d0pair.M(), d0pair.Perp());
-              } else { // K+pi+
-                  hMkpiCount_like2->Fill(d0pair.M());
-                  hMkpiCountPt_like2->Fill(d0pair.M(), d0pair.Perp());
-              }
-          }
-      } // end inner track loop
-    } // end outer track loop
-  } //Good Event
+        // Fill Signal or Background histograms based on charge
+        if (isOppositeSign) {
+            hMkpiCount->Fill(d0pair.M());
+            hMkpiCountPt->Fill(d0pair.M(), d0pair.Perp());
+        } else if (isLikeSign) {
+            // Distinguish between -- and ++ pairs if needed
+            if (trk_K->charge() < 0) { // K-pi-
+                hMkpiCount_like1->Fill(d0pair.M());
+                hMkpiCountPt_like1->Fill(d0pair.M(), d0pair.Perp());
+            } else { // K+pi+
+                hMkpiCount_like2->Fill(d0pair.M());
+                hMkpiCountPt_like2->Fill(d0pair.M(), d0pair.Perp());
+            }
+        }
+    } // end inner track loop
+} // end outer track loop
+} //Good Event
 }
   if(DEBUG) cout<<"end make"<<endl;
   return kStOK;
