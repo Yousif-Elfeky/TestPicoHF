@@ -918,7 +918,7 @@ Int_t StPicoDstarMixedMaker::Make()
       h_nSigmaVsPcharge_Kaon->Fill(p * charge, nSigmaK);
       h_nSigmaVsPcharge_Proton->Fill(p * charge, nSigmaP);
 
-	//choose inclusive electron
+	    //choose inclusive electron
       // bool isTPCElectron =  trk->nSigmaElectron()<2 && trk->nSigmaElectron()>0.75;
       bool isTPCElectron=0;
       if (mom.Mag()>0.8) isTPCElectron =  trk->nSigmaElectron()<2 && trk->nSigmaElectron()>-0.75;
@@ -986,12 +986,14 @@ Int_t StPicoDstarMixedMaker::Make()
             particleinfo.p2 = mom.Y();
             particleinfo.p3 = mom.Z();
             electroninfo.push_back(particleinfo);
-            //            cout<<"debug01"<<endl;
-            /* current_eMinus[current_nEMinus].SetPx(mom.x());
-             current_eMinus[current_nEMinus].SetPy(mom.y());
-             current_eMinus[current_nEMinus].SetPz(mom.z());
-             current_eMinus[current_nEMinus].SetE(sqrt(pow(M_electron,2.0)+pow(mom.Mag(),2.0)));
-             current_nEMinus++;*/
+            //cout<<"debug01"<<endl;
+            /* 
+            current_eMinus[current_nEMinus].SetPx(mom.x());
+            current_eMinus[current_nEMinus].SetPy(mom.y());
+            current_eMinus[current_nEMinus].SetPz(mom.z());
+            current_eMinus[current_nEMinus].SetE(sqrt(pow(M_electron,2.0)+pow(mom.Mag(),2.0)));
+            current_nEMinus++;
+            */
         }
 
         if(trk->charge()>0 && tofmatch){
@@ -1009,18 +1011,19 @@ Int_t StPicoDstarMixedMaker::Make()
             particleinfo.p2 = mom.Y();
             particleinfo.p3 = mom.Z();
             positroninfo.push_back(particleinfo);
-            // cout<<"debug02"<<endl;
-             /*current_ePlus[current_nEPlus].SetPx(mom.x());
+            //cout<<"debug02"<<endl;
+             /*
+             current_ePlus[current_nEPlus].SetPx(mom.x());
              current_ePlus[current_nEPlus].SetPy(mom.y());
              current_ePlus[current_nEPlus].SetPz(mom.z());
              current_ePlus[current_nEPlus].SetE(sqrt(pow(M_electron,2.0)+pow(mom.Mag(),2.0)));
-             current_nEPlus++;*/
+             current_nEPlus++;
+             */
         }
       }
-         //current_nE++;
-
+      //current_nE++;
       // ---- Store Kaon candidates for D0 analysis ----
-      if (isTofKaon && isTpcKaon && tofmatch) {
+      if (isKaon(trk)) {
         if (charge < 0) {
           ParticleInfo kineg;
           kineg.charge = charge;
@@ -1053,7 +1056,7 @@ Int_t StPicoDstarMixedMaker::Make()
       }
 
       // ---- Store Pion candidates for D0 analysis ----
-      if (isTofPion && isTpcPion) {
+      if (isPion(trk)) {
         if (charge < 0) {
           ParticleInfo pineg;
           pineg.charge = charge;
@@ -1175,79 +1178,74 @@ Int_t StPicoDstarMixedMaker::Make()
     }
     if(QA) hnTofHitvsRef->Fill(ntofhits,picoEvent->refMult());
 
-      int x=0;
-      int y=0;
-      int num_electron = electroninfo.size();
-      int num_positron = positroninfo.size();
-      float inv_mass=0;
-      TVector3 momentum_particle;
-      TLorentzVector eepair(0,0,0,0);
-      TLorentzVector particle1_4V(0,0,0,0);
-      TLorentzVector particle2_4V(0,0,0,0);
-      for(x=0;x<num_electron;x++)
-         {
-             particle1_4V.SetPx(electroninfo[x].p1);
-             particle1_4V.SetPy(electroninfo[x].p2);
-             particle1_4V.SetPz(electroninfo[x].p3);
-             particle1_4V.SetE(electroninfo[x].energy);
-               for(y=x+1;y<num_electron;y++)
-                  {
-                    particle2_4V.SetPx(electroninfo[y].p1);
-                    particle2_4V.SetPy(electroninfo[y].p2);
-                    particle2_4V.SetPz(electroninfo[y].p3);
-                    particle2_4V.SetE(electroninfo[y].energy);
-                    eepair = particle1_4V + particle2_4V;
+    int x=0;
+    int y=0;
+    int num_electron = electroninfo.size();
+    int num_positron = positroninfo.size();
+    float inv_mass=0;
+    TVector3 momentum_particle;
+    TLorentzVector eepair(0,0,0,0);
+    TLorentzVector particle1_4V(0,0,0,0);
+    TLorentzVector particle2_4V(0,0,0,0);
 
-                    //if(eepair.Perp()<0.2){hMeeCount_like1->Fill(eepair.M());}
-                    hMeeCount_like1->Fill(eepair.M());
-                    hMeeCountPt_like1->Fill(eepair.M(),eepair.Perp());
-//                    cout<<"debug03"<<endl;
-                    //if(eepair.Perp()<=10){hMeelike1_Pt_Cent->Fill(eepair.Perp(),mCentrality,eepair.M());}
-                  }
-         }
+    for(x=0;x<num_electron;x++){
+      particle1_4V.SetPx(electroninfo[x].p1);
+      particle1_4V.SetPy(electroninfo[x].p2);
+      particle1_4V.SetPz(electroninfo[x].p3);
+      particle1_4V.SetE(electroninfo[x].energy);
+      for(y=x+1;y<num_electron;y++){
+        particle2_4V.SetPx(electroninfo[y].p1);
+        particle2_4V.SetPy(electroninfo[y].p2);
+        particle2_4V.SetPz(electroninfo[y].p3);
+        particle2_4V.SetE(electroninfo[y].energy);
+        eepair = particle1_4V + particle2_4V;
 
-      for(x=0;x<num_positron;x++)
-         {
-             particle1_4V.SetPx(positroninfo[x].p1);
-             particle1_4V.SetPy(positroninfo[x].p2);
-             particle1_4V.SetPz(positroninfo[x].p3);
-             particle1_4V.SetE(positroninfo[x].energy);
-               for(y=x+1;y<num_positron;y++)
-                  {
-                    particle2_4V.SetPx(positroninfo[y].p1);
-                    particle2_4V.SetPy(positroninfo[y].p2);
-                    particle2_4V.SetPz(positroninfo[y].p3);
-                    particle2_4V.SetE(positroninfo[y].energy);
-                    eepair = particle1_4V + particle2_4V;
-                    //if(eepair.Perp()<0.2){hMeeCount_like2->Fill(eepair.M());}
-                    hMeeCount_like2->Fill(eepair.M());
-                    hMeeCountPt_like2->Fill(eepair.M(),eepair.Perp());
-                    //if(eepair.Perp()<=10){hMeelike2_Pt_Cent->Fill(eepair.Perp(),mCentrality,eepair.M());}
-                  }
-         }
-      for(x=0;x<num_positron;x++)
-         {
-             particle1_4V.SetPx(positroninfo[x].p1);
-             particle1_4V.SetPy(positroninfo[x].p2);
-             particle1_4V.SetPz(positroninfo[x].p3);
-             particle1_4V.SetE(positroninfo[x].energy);
-               for(y=0;y<num_electron;y++)
-                  {
-                    particle2_4V.SetPx(electroninfo[y].p1);
-                    particle2_4V.SetPy(electroninfo[y].p2);
-                    particle2_4V.SetPz(electroninfo[y].p3);
-                    particle2_4V.SetE(electroninfo[y].energy);
-                    eepair = particle1_4V + particle2_4V;
-                    //if(eepair.Perp()<0.2){hMeeCount->Fill(eepair.M());}
-                    hMeeCount->Fill(eepair.M());
-                    hMeeCountPt->Fill(eepair.M(),eepair.Perp());
-                    //if(eepair.Perp()<=10){hMee_Pt_Cent->Fill(eepair.Perp(),mCentrality,eepair.M());}
-                  }
-         }
+        //if(eepair.Perp()<0.2){hMeeCount_like1->Fill(eepair.M());}
+        hMeeCount_like1->Fill(eepair.M());
+        hMeeCountPt_like1->Fill(eepair.M(),eepair.Perp());
+        //cout<<"debug03"<<endl;
+        //if(eepair.Perp()<=10){hMeelike1_Pt_Cent->Fill(eepair.Perp(),mCentrality,eepair.M());}
+      }
+    }
 
-        // =========================================================================
-        // =================  FAST, OPTIMIZED D0 RECONSTRUCTION ====================
-        // =========================================================================
+    for(x=0;x<num_positron;x++){
+      particle1_4V.SetPx(positroninfo[x].p1);
+      particle1_4V.SetPy(positroninfo[x].p2);
+      particle1_4V.SetPz(positroninfo[x].p3);
+      particle1_4V.SetE(positroninfo[x].energy);
+      for(y=x+1;y<num_positron;y++){
+        particle2_4V.SetPx(positroninfo[y].p1);
+          particle2_4V.SetPy(positroninfo[y].p2);
+          particle2_4V.SetPz(positroninfo[y].p3);
+          particle2_4V.SetE(positroninfo[y].energy);
+          eepair = particle1_4V + particle2_4V;
+          //if(eepair.Perp()<0.2){hMeeCount_like2->Fill(eepair.M());}
+          hMeeCount_like2->Fill(eepair.M());
+          hMeeCountPt_like2->Fill(eepair.M(),eepair.Perp());
+          //if(eepair.Perp()<=10){hMeelike2_Pt_Cent->Fill(eepair.Perp(),mCentrality,eepair.M());}
+        }
+      }
+        for(x=0;x<num_positron;x++){
+          particle1_4V.SetPx(positroninfo[x].p1);
+          particle1_4V.SetPy(positroninfo[x].p2);
+          particle1_4V.SetPz(positroninfo[x].p3);
+          particle1_4V.SetE(positroninfo[x].energy);
+          for(y=0;y<num_electron;y++){
+            particle2_4V.SetPx(electroninfo[y].p1);
+            particle2_4V.SetPy(electroninfo[y].p2);
+            particle2_4V.SetPz(electroninfo[y].p3);
+            particle2_4V.SetE(electroninfo[y].energy);
+            eepair = particle1_4V + particle2_4V;
+            //if(eepair.Perp()<0.2){hMeeCount->Fill(eepair.M());}
+            hMeeCount->Fill(eepair.M());
+            hMeeCountPt->Fill(eepair.M(),eepair.Perp());
+            //if(eepair.Perp()<=10){hMee_Pt_Cent->Fill(eepair.Perp(),mCentrality,eepair.M());}
+          }
+        }
+
+      // =========================================================================
+      // =================  FAST, OPTIMIZED D0 RECONSTRUCTION ====================
+      // =========================================================================
 
         double bField = picoEvent->bField();
 
