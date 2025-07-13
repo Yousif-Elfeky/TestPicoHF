@@ -1032,13 +1032,13 @@ Int_t StPicoDstarMixedMaker::Make()
         }
       }
       if (isPion(trk)) {
-        if (trk->charge() > 0)posPionIndices.push_back(i);
-        else if (trk->charge() < 0)negPionIndices.push_back(i);
+        if (trk->charge() > 0)posPionIndices.push_back(itrack);
+        else if (trk->charge() < 0)negPionIndices.push_back(itrack);
       }
       // Use 'else if' to prevent a track being both a pion and kaon
       else if (isKaon(trk)) {
-          if (trk->charge() > 0) posKaonIndices.push_back(i);
-          else if (trk->charge() < 0)negKaonIndices.push_back(i);
+          if (trk->charge() > 0) posKaonIndices.push_back(itrack);
+          else if (trk->charge() < 0)negKaonIndices.push_back(itrack);
       }
 
       //current_nE++;
