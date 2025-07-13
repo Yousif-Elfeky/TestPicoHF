@@ -1261,7 +1261,6 @@ Int_t StPicoDstarMixedMaker::Make()
 
             // Apply single-track cuts first to reject junk tracks
             if (!isGoodTrack(trk, trk->gDCA(pVtx.x(), pVtx.y(), pVtx.z()))) continue;
-            if (trk->pMom().Perp() < 0.4) continue; // Daughter pT > 400 MeV
 
             // Check if it's a candidate and store its index
             if (isPion(trk)) {
@@ -1406,12 +1405,12 @@ bool StPicoDstarMixedMaker::isPion(StPicoTrack const* const trk) const
     double beta = getTofBeta(trk);
     bool tofmatch = (beta != std::numeric_limits<float>::quiet_NaN()) && beta > 0;
 
-    bool isTpcPion = fabs(trk->nSigmaPion()) < 2.0;
+    bool isTpcPion = fabs(trk->nSigmaPion()) < anaCuts::pid::nSigmaPion;
 
     bool isTofPion = false;
     if (tofmatch) {
         float beta_expected = sqrt(p*p + M_PION_PLUS*M_PION_PLUS) / p;
-        if (fabs(1.0/beta - beta_expected) < 0.03) {
+        if (fabs(1.0/beta - beta_expected) < anaCuts::pid::tofBetaPion) {
             isTofPion = true;
         }
     }
@@ -1424,12 +1423,12 @@ bool StPicoDstarMixedMaker::isKaon(StPicoTrack const* const trk) const
     double beta = getTofBeta(trk);
     bool tofmatch = (beta != std::numeric_limits<float>::quiet_NaN()) && beta > 0;
 
-    bool isTpcKaon = fabs(trk->nSigmaKaon()) < 2.0;
+    bool isTpcKaon = fabs(trk->nSigmaKaon()) < anaCuts::pid::nSigmaKaon;
 
     bool isTofKaon = false;
     if (tofmatch) {
         float beta_expected = sqrt(p*p + M_KAON_PLUS*M_KAON_PLUS) / p;
-        if (fabs(1.0/beta - beta_expected) < 0.03) {
+        if (fabs(1.0/beta - beta_expected) < anaCuts::pid::tofBetaKaon) {
             isTofKaon = true;
         }
     }
@@ -1451,6 +1450,8 @@ void StPicoDstarMixedMaker::analyzeD0Pair(StPicoTrack* trk1, StPicoTrack* trk2, 
     }
 
     // --- Topological Cuts ---
+    if (trk_K->pMom().Perp() < anaCuts::d0::daughterPtMin || trk_pi->pMom().Perp() < anaCuts::d0::daughterPtMin) return;
+
     StPicoPhysicalHelix kaonHelix = trk_K->helix(bField);
     StPicoPhysicalHelix pionHelix = trk_pi->helix(bField);
 
@@ -1458,17 +1459,17 @@ void StPicoDstarMixedMaker::analyzeD0Pair(StPicoTrack* trk1, StPicoTrack* trk2, 
     TVector3 dcaVtx = (kaonHelix.at(s.first) + pionHelix.at(s.second)) * 0.5;
     double dcaDaughters = (kaonHelix.at(s.first) - pionHelix.at(s.second)).Mag();
 
-    if (dcaDaughters > 0.01) return;
+    if (dcaDaughters > anaCuts::d0::dcaDaughtersMax) return;
 
     TVector3 d0Mom = trk_K->pMom() + trk_pi->pMom();
     double decayLength = (dcaVtx - pVtx).Mag();
-    if (decayLength < 0.02) return;
+    if (decayLength < anaCuts::d0::decayLengthMin) return;
 
     double cosPointingAngle = d0Mom.Dot(dcaVtx - pVtx) / (d0Mom.Mag() * (dcaVtx - pVtx).Mag());
-    if (cosPointingAngle < 0.98) return;
+    if (cosPointingAngle < anaCuts::d0::cosPointingAngleMin) return;
 
-    if (trk_K->gDCA(pVtx.x(), pVtx.y(), pVtx.z()) < 0.01) return;
-    if (trk_pi->gDCA(pVtx.x(), pVtx.y(), pVtx.z()) < 0.01) return;
+    if (trk_K->gDCA(pVtx.x(), pVtx.y(), pVtx.z()) < anaCuts::d0::daughterDCAPVMin) return;
+    if (trk_pi->gDCA(pVtx.x(), pVtx.y(), pVtx.z()) < anaCuts::d0::daughterDCAPVMin) return;
 
     // --- Calculate Invariant Mass and Fill Histograms ---
     TLorentzVector kaon4V, pion4V;
@@ -1476,7 +1477,7 @@ void StPicoDstarMixedMaker::analyzeD0Pair(StPicoTrack* trk1, StPicoTrack* trk2, 
     pion4V.SetVectM(trk_pi->pMom(), M_PION_PLUS);
     TLorentzVector d0pair = kaon4V + pion4V;
 
-    if (d0pair.Perp() < 1.5) return;
+    if (d0pair.Perp() < anaCuts::d0::d0PtMin) return;
 
     // --- Fill Histograms based on charge ---
     bool isOppositeSign = (trk_K->charge() * trk_pi->charge() < 0);
