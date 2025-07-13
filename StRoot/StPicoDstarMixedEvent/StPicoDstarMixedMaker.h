@@ -318,10 +318,6 @@ class StPicoDstarMixedMaker : public StMaker
 
     // =================================================================
 
-    std::vector<int> posPionIndices;
-    std::vector<int> negPionIndices;
-    std::vector<int> posKaonIndices;
-    std::vector<int> negKaonIndices;
 
 
     ClassDef(StPicoDstarMixedMaker, 1)

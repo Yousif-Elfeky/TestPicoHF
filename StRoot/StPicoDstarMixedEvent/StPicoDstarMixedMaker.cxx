@@ -49,7 +49,7 @@ Int_t StPicoDstarMixedMaker::Init()
 {
   mOutFileBaseName = mOutFileBaseName.ReplaceAll(".root", "");
   // -------------- USER VARIABLES -------------------------
-  mFile = new TFile(mOutFileBaseName+".QA.root", "RECREATE");
+  mFile = new TFile(mOutFileBaseName+".root", "RECREATE");
   //mFile_RunID = new TFile(mOutFileBaseName+".RunID.root","RECREATE");
   //initialize trees
   initHists();
@@ -1441,7 +1441,7 @@ void StPicoDstarMixedMaker::analyzeD0Pair(StPicoTrack* trk1, StPicoTrack* trk2, 
         trk_K = trk2;
         trk_pi = trk1;
     } else {
-        return; // Should not happen if called correctly
+        return;
     }
 
     // --- Topological Cuts ---
