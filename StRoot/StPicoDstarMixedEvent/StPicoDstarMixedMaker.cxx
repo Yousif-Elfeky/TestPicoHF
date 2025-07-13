@@ -542,10 +542,18 @@ Int_t StPicoDstarMixedMaker::Make()
   ParticleInfo particleinfo;
   vector<ParticleInfo> electroninfo;
   vector<ParticleInfo> positroninfo;
+  #if 0
   vector<ParticleInfo> kaoninfo_pos;
   vector<ParticleInfo> kaoninfo_neg;
   vector<ParticleInfo> pioninfo_pos;
   vector<ParticleInfo> pioninfo_neg;
+  #endif
+
+  std::vector<int> posPionIndices;
+  std::vector<int> negPionIndices;
+  std::vector<int> posKaonIndices;
+  std::vector<int> negKaonIndices;
+
   // StMemStat mem;
   if (!mPicoDstMaker)
   {
@@ -759,10 +767,12 @@ Int_t StPicoDstarMixedMaker::Make()
 
   electroninfo.clear();
   positroninfo.clear();
+#if 0
   kaoninfo_pos.clear();
   kaoninfo_neg.clear();
   pioninfo_pos.clear();
   pioninfo_neg.clear();
+#endif
 
   //event and track level QA
   if(QA) hpassevtcut->Fill(0);
@@ -1021,7 +1031,18 @@ Int_t StPicoDstarMixedMaker::Make()
              */
         }
       }
+      if (isPion(trk)) {
+        if (trk->charge() > 0)posPionIndices.push_back(i);
+        else if (trk->charge() < 0)negPionIndices.push_back(i);
+      }
+      // Use 'else if' to prevent a track being both a pion and kaon
+      else if (isKaon(trk)) {
+          if (trk->charge() > 0) posKaonIndices.push_back(i);
+          else if (trk->charge() < 0)negKaonIndices.push_back(i);
+      }
+
       //current_nE++;
+      #if 0 // Disabled unused Kaon/Pion candidate storage blocks
       // ---- Store Kaon candidates for D0 analysis ----
       if (isKaon(trk)) {
         if (charge < 0) {
@@ -1087,6 +1108,7 @@ Int_t StPicoDstarMixedMaker::Make()
           pioninfo_pos.push_back(pipos);
         }
       }
+    #endif // Disabled unused Kaon/Pion candidate storage blocks
 
       if (tofmatch) {
         ntofhits++;
@@ -1249,31 +1271,6 @@ Int_t StPicoDstarMixedMaker::Make()
 
         double bField = picoEvent->bField();
 
-        std::vector<int> posPionIndices;
-        std::vector<int> negPionIndices;
-        std::vector<int> posKaonIndices;
-        std::vector<int> negKaonIndices;
-
-        for (int i = 0; i < nTracks; ++i) {
-            StPicoTrack* trk = picoDst->track(i);
-
-            // Apply single-track cuts first to reject junk tracks
-            if (!isGoodTrack(trk, trk->gDCA(pVtx.x(), pVtx.y(), pVtx.z()))) continue;
-
-            // Check if it's a candidate and store its index
-            if (isPion(trk)) {
-                if (trk->charge() > 0) posPionIndices.push_back(i);
-                else negPionIndices.push_back(i);
-            }
-            // Use 'else if' to prevent a track being both a pion and kaon
-            else if (isKaon(trk)) {
-                if (trk->charge() > 0) posKaonIndices.push_back(i);
-                else negKaonIndices.push_back(i);
-            }
-        }
-
-        // --- Pass 2: Pairing (Now much faster!) ---
-
         // 1. Signal: K- pi+
         for (int i_k : negKaonIndices) {
             for (int i_p : posPionIndices) {
@@ -1401,7 +1398,7 @@ bool StPicoDstarMixedMaker::isPion(StPicoTrack const* const trk) const
 {
     double p = trk->pMom().Mag();
     double beta = getTofBeta(trk);
-    bool tofmatch = (beta != std::numeric_limits<float>::quiet_NaN()) && beta > 0;
+    bool tofmatch = (!std::isnan(beta)) && beta > 0;
 
     bool isTpcPion = fabs(trk->nSigmaPion()) < anaCuts::pid::nSigmaPion;
 
